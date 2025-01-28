@@ -78,9 +78,12 @@ class ModelGraph:
         self.include_models = parse_file_or_list(
             kwargs.get('include_models', "")
         )
+        self.add_doc = kwargs.get('models-doc', False)
         self.all_applications = kwargs.get('all_applications', False)
         self.use_subgraph = kwargs.get('group_models', False)
         self.verbose_names = kwargs.get('verbose_names', False)
+        self.foreign = kwargs.get('foreign', True)
+        self.m2m_fields = kwargs.get('m2m_fields', False)
         self.inheritance = kwargs.get('inheritance', True)
         self.relations_as_fields = kwargs.get("relations_as_fields", True)
         self.relation_fields_only = kwargs.get("relation_fields_only", False)
@@ -158,7 +161,9 @@ class ModelGraph:
         if self.display_field_choices and field.choices is not None:
             choices = {c for c, _ in field.choices}
             t = str(choices)
-        # TODO: ManyToManyField, GenericRelation
+        elif isinstance(field, ManyToManyField):
+            t += " ({0})".format(field.related_model()._meta.verbose_name)
+        # TODO: GenericRelation
 
         return {
             'field': field,
@@ -238,6 +243,9 @@ class ModelGraph:
             # Find all the 'real' attributes. Relations are depicted as graph edges instead of attributes
             attributes = [field for field in appmodel._meta.local_fields if not
                           isinstance(field, RelatedField)]
+        if self.m2m_fields:
+            attributes.extend([field for field in appmodel._meta.local_many_to_many
+                                if isinstance(field, ManyToManyField)])
         return attributes
 
     def get_appmodel_abstracts(self, appmodel):
@@ -253,13 +261,16 @@ class ModelGraph:
             'name': appmodel.__name__,
             'abstracts': appmodel_abstracts,
             'fields': [],
-            'relations': []
+            'relations': [],
         }
 
         if self.verbose_names and appmodel._meta.verbose_name:
             context['label'] = force_str(appmodel._meta.verbose_name)
         else:
             context['label'] = context['name']
+
+        if self.add_doc:
+            context['doc'] = self.model_doc_4_template(appmodel)
 
         return context
 
@@ -341,16 +352,18 @@ class ModelGraph:
                 if self.sort_fields:
                     model = self.sort_model_fields(model)
 
-                for field in appmodel._meta.local_fields:
-                    model = self.process_local_fields(field, model, abstract_fields)
+                if self.foreign:
+                    for field in appmodel._meta.local_fields:
+                        model = self.process_local_fields(field, model, abstract_fields)
 
-                for field in appmodel._meta.local_many_to_many:
-                    model = self.process_local_many_to_many(field, model)
+                    for field in appmodel._meta.local_many_to_many:
+                        model = self.process_local_many_to_many(field, model)
 
                 if self.inheritance:
                     # add inheritance arrows
                     for parent in appmodel.__bases__:
                         model = self.process_parent(parent, appmodel, model)
+
 
                 app_graph['models'].append(model)
             if app_graph['models']:
@@ -415,6 +428,21 @@ class ModelGraph:
             if _rel not in newmodel['relations'] and self.use_model(_rel['target']):
                 newmodel['relations'].append(_rel)
         return newmodel
+
+    def model_doc_4_template(self, model):
+        if model.__doc__:
+            doclines = [line.strip() for line in model.__doc__.splitlines()]
+        else:
+            return []
+        # remove only first empty lines
+        while doclines and not doclines[0]:
+            doclines.pop(0)
+        if self.add_doc > 0:
+            doclines = doclines[:self.add_doc]
+        # remove empty lines at the end
+        while doclines and not doclines[-1]:
+            doclines.pop()
+        return doclines
 
     def sort_model_fields(self, model):
         newmodel = model.copy()

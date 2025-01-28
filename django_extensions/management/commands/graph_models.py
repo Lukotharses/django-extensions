@@ -141,6 +141,15 @@ class Command(BaseCommand):
                 'dest': 'include_models',
                 'help': 'Restrict the graph to specified models. Wildcards (*) are allowed.',
             },
+            '--models-doc -m': {
+                'action': 'store',
+                'dest': 'models-doc',
+                'help': 'Add the first lines of models’ doc to the headers. Number of lines can be provided, defaults to all lines (skipping empty first lines).',
+                'type': int,
+                'nargs': '?',
+                'required': False,
+                'const': -1,
+            },
             '--inheritance -e': {
                 'action': 'store_true',
                 'default': True,
@@ -152,6 +161,16 @@ class Command(BaseCommand):
                 'default': False,
                 'dest': 'inheritance',
                 'help': 'Do not include inheritance arrows',
+            },
+            '--no-fk -F': {
+                'action': 'store_false',
+                'dest': 'foreign',
+                'help': 'Do not include any foreignkey arrows',
+            },
+            '--m2m-fields -M': {
+                'action': 'store_true',
+                'dest': 'm2m_fields',
+                'help': 'include ManyToManyField in fields',
             },
             '--hide-relations-from-fields -R': {
                 'action': 'store_false',
