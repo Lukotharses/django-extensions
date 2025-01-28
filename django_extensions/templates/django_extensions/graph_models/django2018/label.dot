@@ -1,4 +1,4 @@
-{% load indent_text %}{% if use_subgraph %}  subgraph {{ graph.cluster_app_name }} {
+{% load indent_text %}{% load widont %}{% if use_subgraph %}  subgraph {{ graph.cluster_app_name }} {
     label=<
           <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
           <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER">
@@ -17,6 +17,9 @@
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
     {{ model.label }}{% if model.abstracts %}<BR/>&lt;<FONT FACE="Roboto"><I>{{ model.abstracts|join:"," }}</I></FONT>&gt;{% endif %}
     </B></FONT></TD></TR>
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#176949">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="8">
+    {% for line in model.doc %}{{line}}<BR/>{% endfor %}</FONT></TD></TR>
   {% if not disable_fields %}{% for field in model.fields %}
   {% if disable_abstract_fields and field.abstract %}
   {% else %}
