@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django import template
 
 register = template.Library()
@@ -50,6 +49,6 @@ def indentby(parser, token):
     if_statement = None
     if largs == 4:
         if_statement = args[3]
-    nodelist = parser.parse(('endindentby', ))
+    nodelist = parser.parse(("endindentby",))
     parser.delete_first_token()
     return IndentByNode(nodelist, indent_level, if_statement)

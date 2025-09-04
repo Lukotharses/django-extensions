@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.test import TestCase, RequestFactory
 from django.http import HttpResponse
 from django.views.generic import DetailView
@@ -19,7 +18,7 @@ class EmptyResponseView(DetailView):
 
 
 class OwnerView(ModelUserFieldPermissionMixin, EmptyResponseView):
-    model_permission_user_field = 'owner'
+    model_permission_user_field = "owner"
 
 
 class ModelUserFieldPermissionMixinTests(TestCase):
@@ -33,14 +32,14 @@ class ModelUserFieldPermissionMixinTests(TestCase):
 
     # Test if owner model has access
     def test_permission_pass(self):
-        request = self.factory.get('/permission-required/' + str(self.ownerModel.id))
+        request = self.factory.get("/permission-required/" + str(self.ownerModel.id))
         request.user = self.user
         resp = OwnerView.as_view()(request)
         self.assertEqual(resp.status_code, 200)
 
     # # Test if non owner model is redirected
     def test_permission_denied_and_redirect(self):
-        request = self.factory.get('/permission-required/' + str(self.ownerModel.id))
+        request = self.factory.get("/permission-required/" + str(self.ownerModel.id))
         request.user = AnonymousUser()
         resp = OwnerView.as_view()(request)
         self.assertRaises(PermissionDenied)

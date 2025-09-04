@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from io import StringIO
 
 from django.core.management import call_command
@@ -6,7 +5,7 @@ from django.core.management import call_command
 
 def test_show_template_tags():
     out = StringIO()
-    call_command('show_template_tags', '--no-color', stdout=out)
+    call_command("show_template_tags", "--no-color", stdout=out)
 
     output = out.getvalue()
 
@@ -18,7 +17,7 @@ def test_show_template_tags():
 
 def test_show_template_tags_testapp():
     out = StringIO()
-    call_command('show_template_tags', '--no-color', stdout=out)
+    call_command("show_template_tags", "--no-color", stdout=out)
 
     output = out.getvalue()
 
@@ -29,7 +28,7 @@ def test_show_template_tags_testapp():
 
 def test_show_template_tags_testapp_with_appconfig():
     out = StringIO()
-    call_command('show_template_tags', '--no-color', stdout=out)
+    call_command("show_template_tags", "--no-color", stdout=out)
 
     output = out.getvalue()
 

@@ -11,8 +11,6 @@ Django Extensions is a collection of custom extensions for the Django Framework.
 These include management commands, additional database fields, admin extensions and
 much more.
 
-`这篇文档当然还有中文版 <https://django-extensions-zh.readthedocs.io/zh_CN/latest/>`_
-
 Getting Started
 ===============
 
@@ -25,11 +23,11 @@ You can get Django Extensions by using pip::
 
  $ pip install django-extensions
 
-If you want to install it from source, grab the git repository and run setup.py::
+If you want to install it from source, grab the git repository and install::
 
  $ git clone git://github.com/django-extensions/django-extensions.git
  $ cd django-extensions
- $ python setup.py install
+ $ pip install .
 
 Then you will need to add the *django_extensions* application to the
 ``INSTALLED_APPS`` setting of your Django project *settings.py* file.
@@ -60,6 +58,8 @@ Contents
    permissions
    utilities
    validators
+   show_permissions
+   verify_named_urls
 
 
 Indices and tables

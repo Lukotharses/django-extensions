@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collections.abc import Container
 import ipaddress
 import itertools
@@ -49,7 +48,7 @@ class InternalIPS(Container):
         """
         Raises ``TypeError`` if this method is called.
         """
-        raise TypeError('InternalIPS containers are unhashable!')
+        raise TypeError("InternalIPS containers are unhashable!")
 
     def __len__(self):
         """

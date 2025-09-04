@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from importlib import import_module
 from inspect import (
     getmembers,
@@ -46,12 +45,16 @@ class SubclassesFinder:
         return result
 
     def _collect_classes_from_module(self, module_name):  # type: (str) -> List[Tuple[str, str]]
-        for excluded_module in getattr(settings, 'SHELL_PLUS_SUBCLASSES_IMPORT_MODULES_BLACKLIST', []):
+        for excluded_module in getattr(
+            settings, "SHELL_PLUS_SUBCLASSES_IMPORT_MODULES_BLACKLIST", []
+        ):
             if module_name.startswith(excluded_module):
                 return []
         imported_module = import_module(module_name)
         classes_to_import = getmembers(
-            imported_module, lambda element: isclass(element) and element.__module__ == imported_module.__name__
+            imported_module,
+            lambda element: isclass(element)
+            and element.__module__ == imported_module.__name__,
         )
         classes_to_import = list(filter(self._should_be_imported, classes_to_import))
         return [(name, name) for name, _ in classes_to_import]
